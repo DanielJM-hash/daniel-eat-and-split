@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoginForm from "./LoginForm";
+import LoginForm from "./components/LoginForm";
 
 const initialFriends = [
   {
@@ -62,8 +62,7 @@ export default function App() {
     setSelectedFriend(null);
   }
 
-  return (
-   
+  return (   
     !isAuthenticated ? <LoginForm /> : <><div className="app">
         <div className="sidebar">
           <FriendList
