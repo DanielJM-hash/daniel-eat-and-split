@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LoginForm from "./components/LoginForm";
+import SignUpForm from "./components/SignUpForm";
 
 const initialFriends = [
   {
@@ -63,7 +64,7 @@ export default function App() {
   }
 
   return (   
-    !isAuthenticated ? <LoginForm /> : <><div className="app">
+    !isAuthenticated ? <SignUpForm /> : <><div className="app">
         <div className="sidebar">
           <FriendList
             friends={friends}
