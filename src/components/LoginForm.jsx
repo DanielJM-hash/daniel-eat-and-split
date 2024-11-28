@@ -35,8 +35,10 @@ const LoginForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ flex: "1", marginRight: "0.5rem" }}
+              style={{ flex: "1", marginRight: "0.px" }}
             />
+          </div>
+          <div>
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}

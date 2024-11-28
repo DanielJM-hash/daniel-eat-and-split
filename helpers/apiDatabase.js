@@ -5,6 +5,13 @@ const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded());
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 
 // JWT secret key
 const SECRET_KEY = "your_secret_key";
@@ -31,8 +38,9 @@ const db = new sqlite3.Database("./users.db", (err) => {
 
 // Logic for Signup path
 app.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
 
+  const { email, password } = req.body;
+    console.log(password)
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required." });
   }

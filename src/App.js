@@ -1,7 +1,12 @@
 import { useState } from "react";
 import LoginForm from "./components/LoginForm";
 import SignUpForm from "./components/SignUpForm";
+import { AuthContext } from "./context";
+import {SignUpContext } from "./context";
 
+// const AuthContext = React.createContext('false');
+
+/* initial data */
 const initialFriends = [
   {
     id: 118836,
@@ -23,6 +28,7 @@ const initialFriends = [
   },
 ];
 
+/* component */
 function Button({ onClick, children }) {
   return (
     <button onClick={onClick} className="button">
@@ -31,11 +37,14 @@ function Button({ onClick, children }) {
   );
 }
 
+/* app */
 export default function App() {
+  /* initial app state */
   const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [showSignUpPage, setShowSignUpPage] = useState(false)
 
   function handleShowAddFriend() {
     setShowAddFriend(!showAddFriend);
@@ -63,33 +72,73 @@ export default function App() {
     setSelectedFriend(null);
   }
 
-  return (   
-    !isAuthenticated ? <SignUpForm /> : <><div className="app">
-        <div className="sidebar">
-          <FriendList
-            friends={friends}
-            onSelection={handleSelection}
-            selectedFriend={selectedFriend}
-          />
-    
-          {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend} />}
-    
-          <Button onClick={handleShowAddFriend}>
-            {showAddFriend ? "Close" : "Add Friend"}
-          </Button>
-        </div>
-    
-        {selectedFriend && (
-          <FormSplitBill
-            selectedFriend={selectedFriend}
-            onSplitBill={handleSplitBill}
-            key={selectedFriend.id}
-          />
-        )}
-      </div>
-      </>
-    )
+  const handleShowSignUp = () => {
+    setShowSignUpPage(true);
+  };
 
+  return (
+    <div className="app">
+      { showSignUpPage && <SignUpInComponent/> }
+      { (!isAuthenticated && !showSignUpPage) && <LogInComponent/> }
+      { (isAuthenticated && !showSignUpPage) && <MainComponent/> }
+    </div>
+  )
+
+function LogInComponent () {
+  return (
+    <div>
+      
+      <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated}}>
+        <LoginForm />
+        <Button onClick={() => setShowSignUpPage(true)}
+        > Sign Up </Button>
+      </AuthContext.Provider>
+
+    </div>   
+  )
+}
+function SignUpInComponent () {
+  return (
+    <div>
+      
+      <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+        <SignUpContext.Provider value={{showSignUpPage, setShowSignUpPage}}>
+          <SignUpForm />
+        </SignUpContext.Provider>
+      </AuthContext.Provider>
+
+    </div>   
+  )
+}
+function MainComponent  () {
+  return (
+  <div>
+    <div className="sidebar">
+      <FriendList
+        friends={friends}
+        onSelection={handleSelection}
+        selectedFriend={selectedFriend}
+      />
+
+      {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend} />}
+
+      <Button onClick={handleShowAddFriend}>
+        {showAddFriend ? "Close" : "Add Friend"}
+      </Button>
+      </div>
+
+      <div>
+        {selectedFriend && (
+        <FormSplitBill
+          selectedFriend={selectedFriend}
+          onSplitBill={handleSplitBill}
+          key={selectedFriend.id}
+        />)}
+      </div>
+
+  </div>
+  )
+}
 // Friend List
 function FriendList({ friends, onSelection, selectedFriend }) {
   return (
@@ -228,7 +277,7 @@ function FormSplitBill({ selectedFriend, onSplitBill }) {
         <option value="user">You</option>
         <option value="friend">{selectedFriend.name}</option>
       </select>
-      <Button>Split Bill</Button>
+      {/* <Button>Split Bill</Button> */}
     </form>
   );
 }

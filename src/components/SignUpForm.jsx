@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { AuthContext } from "../context";
+import { SignUpContext } from "../context";
+import { useContext } from "react";
+
 
 const SignUpForm = () => {
+  const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+  const {showSignUpPage, setShowSignUpPage} = useContext(SignUpContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,6 +37,8 @@ const SignUpForm = () => {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        setIsAuthenticated(true);
+        setShowSignUpPage(false);
       } else {
         alert(data.message || "Sign-up failed. Please try again.");
       }
@@ -94,6 +103,7 @@ const SignUpForm = () => {
         </div>
         <button
           type="submit"
+          onClick={(e)=> handleSubmit(e)}
           style={{
             width: "100%",
             padding: "0.75rem",
