@@ -90,8 +90,7 @@ function LogInComponent () {
       
       <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated}}>
         <LoginForm />
-        <Button onClick={() => setShowSignUpPage(true)}
-        > Sign Up </Button>
+        <Button onClick={() => setShowSignUpPage(true)}> Sign Up </Button>
       </AuthContext.Provider>
 
     </div>   

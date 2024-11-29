@@ -7,11 +7,28 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
+
+// Bypass CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
   });
+
+
+// Function to validate email format
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Function to validate password complexity
+const validatePassword = (password) => {
+  // Password must be at least 8 characters, include a number, an uppercase letter, and a special character
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
 
 // JWT secret key
 const SECRET_KEY = "your_secret_key";
@@ -40,10 +57,25 @@ const db = new sqlite3.Database("./users.db", (err) => {
 app.post("/signup", async (req, res) => {
 
   const { email, password } = req.body;
-    console.log(password)
+
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required." });
   }
+
+  // // Validate email format
+  // if (!validateEmail(email)) {
+  //   return res.status(400).json({ message: "Invalid email format." });
+  // }
+  
+  // // Validate password complexity
+  // if (!validatePassword(password)) {
+  //   return res.status(400).json({
+  //     message:
+  //       "Password must be at least 8 characters long, include a number, an uppercase letter, and a special character.",
+  //   });
+  // }
+
+
 
   try {
     // Check if user already exists
@@ -87,8 +119,11 @@ app.post("/login", (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
+    console.log(password, user.password)
+    console.log(bcrypt.compare(password, user.password))
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log(isPasswordValid)
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password." });
     }

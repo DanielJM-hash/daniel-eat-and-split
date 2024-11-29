@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../context";
 
 const LoginForm = () => {
+  const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", email, password);
     // Add authentication logic here
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+
+      if (response.ok) {
+        alert("Login successful! You can now log in.");
+        // setEmail("");
+        // setPassword("");
+        // setConfirmPassword("");
+        setIsAuthenticated(true);
+      } else {
+        alert(data.message || "Login failed. Please try again.");
+      }
+    
+    }  catch(error) {
+      console.error("Error during Login:", error);
+      alert("An error occurred. Please try again later.");
+
+    }
   };
 
   return (
