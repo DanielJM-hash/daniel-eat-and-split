@@ -8,6 +8,9 @@ const SignUpForm = () => {
   const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
   const {showSignUpPage, setShowSignUpPage} = useContext(SignUpContext);
 
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,7 +31,7 @@ const SignUpForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, firstname, lastname, age }),
       });
 
       const data = await response.json();
@@ -36,6 +39,9 @@ const SignUpForm = () => {
       if (response.ok) {
         alert("Sign-up successful! You can now log in.");
         setEmail("");
+        setFirstname("");
+        setLastname("");
+        setAge("");
         setPassword("");
         setConfirmPassword("");
         setIsAuthenticated(true);
@@ -53,6 +59,39 @@ const SignUpForm = () => {
     <div style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem" }}>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="firstname">Firstname:</label>
+          <input
+            type="text"
+            id="firstname"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+            required
+            style={{ display: "block", width: "100%", marginTop: "0.5rem" }}
+          />
+        </div>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="lastname">Lastname:</label>
+          <input
+            type="text"
+            id="lastname"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+            required
+            style={{ display: "block", width: "100%", marginTop: "0.5rem" }}
+          />
+        </div>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="age">Age:</label>
+          <input
+            type="number"
+            id="age"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            required
+            style={{ display: "block", width: "100%", marginTop: "0.5rem" }}
+          />
+        </div>
         <div style={{ marginBottom: "1rem" }}>
           <label htmlFor="email">Email:</label>
           <input

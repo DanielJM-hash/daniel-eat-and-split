@@ -23,7 +23,7 @@ const LoginForm = () => {
 
 
       if (response.ok) {
-        alert("Login successful! You can now log in.");
+        alert("Login successful!");
         // setEmail("");
         // setPassword("");
         // setConfirmPassword("");

@@ -39,10 +39,15 @@ const db = new sqlite3.Database("./users.db", (err) => {
     console.error("Error opening database:", err);
   } else {
     db.run(
-      `CREATE TABLE IF NOT EXISTS users (
+      `CREATE TABLE IF NOT EXISTS users_new (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE,
-        password TEXT
+        password TEXT,
+        role TEXT DEFAULT 'user',
+        IsAdminAccount BIT DEFAULT 0,
+        firstname TEXT,
+        lastname TEXT,
+        age INTEGER
       )`,
       (err) => {
         if (err) {
@@ -56,9 +61,9 @@ const db = new sqlite3.Database("./users.db", (err) => {
 // Logic for Signup path
 app.post("/signup", async (req, res) => {
 
-  const { email, password } = req.body;
+  const { email, password, firstname, lastname, age } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password || !firstname || !lastname || !age)  {
     return res.status(400).json({ message: "Email and password are required." });
   }
 
@@ -79,9 +84,13 @@ app.post("/signup", async (req, res) => {
 
   try {
     // Check if user already exists
-    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+    db.get("SELECT * FROM users_new WHERE email = ?", [email], async (err, user) => {
       if (user) {
         return res.status(400).json({ message: "Email already registered." });
+      }
+
+      if(age < 18 || age > 60) {
+        return res.status(400).json({ message: "Invalid age. Age must be more than 17 and less than 61" });
       }
 
       // Hash password
@@ -89,8 +98,8 @@ app.post("/signup", async (req, res) => {
 
       // Insert user into database
       db.run(
-        "INSERT INTO users (email, password) VALUES (?, ?)",
-        [email, hashedPassword],
+        "INSERT INTO users_new (email, password, role, isadminaccount, firstname, lastname, age) VALUES (?, ?)",
+        [email, hashedPassword, "user", 0, firstname, lastname, age],
         (err) => {
           if (err) {
             console.error("Error inserting user:", err);
@@ -134,6 +143,58 @@ app.post("/login", (req, res) => {
     });
 
     res.json({ message: "Login successful.", token });
+  });
+});
+
+// Route to display all users
+app.get("/viewusers", (req, res) => {
+  db.all("SELECT * FROM users", [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error fetching users.");
+    } else {
+      res.render("users", { users: rows });
+    }
+  });
+});
+
+// Route to update a user
+app.post("/update/:id", (req, res) => {
+  const userId = req.params.id;
+  const { firstname, lastname, age } = req.body;
+
+  if (!first || !lastname || !age ) {
+    return res.status(400).json({ message: "Firstname, lastname, or age can not be empty" });
+  }
+
+  if(age < 18 || age > 60) {
+    return res.status(400).json({ message: "Invalid age. Age must be more than 17 and less than 61" });
+  }
+
+  db.run(
+    "UPDATE users SET firstname = ?, lastname = ?, age = ? WHERE id = ?",
+    [firstname, lastname, age, userId],
+    (err) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Error updating user.");
+      } else {
+        res.redirect("/");
+      }
+    }
+  );
+});
+
+// Route to delete a user
+app.post("/delete/:id", (req, res) => {
+  const userId = req.params.id;
+  db.run("DELETE FROM users WHERE id = ?", [userId], (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error deleting user.");
+    } else {
+      res.redirect("/");
+    }
   });
 });
 
