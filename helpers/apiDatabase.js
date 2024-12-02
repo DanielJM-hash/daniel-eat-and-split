@@ -98,7 +98,7 @@ app.post("/signup", async (req, res) => {
 
       // Insert user into database
       db.run(
-        "INSERT INTO users_new (email, password, role, isadminaccount, firstname, lastname, age) VALUES (?, ?)",
+        "INSERT INTO users_new (email, password, role, isadminaccount, firstname, lastname, age) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [email, hashedPassword, "user", 0, firstname, lastname, age],
         (err) => {
           if (err) {
@@ -123,8 +123,9 @@ app.post("/login", (req, res) => {
   }
 
   // Check if user exists
-  db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+  db.get("SELECT * FROM users_new WHERE email = ?", email, async (err, user) => {
     if (!user) {
+      console.log('HERE')
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
@@ -148,7 +149,7 @@ app.post("/login", (req, res) => {
 
 // Route to display all users
 app.get("/viewusers", (req, res) => {
-  db.all("SELECT * FROM users", [], (err, rows) => {
+  db.all("SELECT * FROM users_new", [], (err, rows) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error fetching users.");
