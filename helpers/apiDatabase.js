@@ -82,7 +82,7 @@ app.post("/signup", async (req, res) => {
 
 
 
-  try {
+try{
     // Check if user already exists
     db.get("SELECT * FROM users_new WHERE email = ?", [email], async (err, user) => {
       if (user) {
@@ -117,7 +117,7 @@ app.post("/signup", async (req, res) => {
 // Logic for Login path
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-
+console.log(email,password)
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required." });
   }
@@ -125,15 +125,12 @@ app.post("/login", (req, res) => {
   // Check if user exists
   db.get("SELECT * FROM users_new WHERE email = ?", email, async (err, user) => {
     if (!user) {
-      console.log('HERE')
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    console.log(password, user.password)
-    console.log(bcrypt.compare(password, user.password))
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(isPasswordValid)
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
@@ -143,7 +140,8 @@ app.post("/login", (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({ message: "Login successful.", token });
+
+    res.json({ message: "Login successful.", token, isAdmin: user.IsAdminAccount});
   });
 });
 

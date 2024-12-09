@@ -39,7 +39,7 @@ const ViewUsers = () => {
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("An error occurred while deleting the user.");
+
     }
   };
 

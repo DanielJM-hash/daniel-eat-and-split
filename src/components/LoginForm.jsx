@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context";
+import { AdminContext } from "../context";
 
 const LoginForm = () => {
   const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+  const {isAdmin, setIsAdmin} = useContext(AdminContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+const [showSignUpPage, setShowSignUpPage] = useState(true); 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add authentication logic here
@@ -20,14 +22,23 @@ const LoginForm = () => {
       });
 
       const data = await response.json();
-
-
+      
       if (response.ok) {
         alert("Login successful!");
         // setEmail("");
         // setPassword("");
         // setConfirmPassword("");
-        setIsAuthenticated(true);
+        setIsAdmin(false);
+        setIsAuthenticated(false);
+        setShowSignUpPage(false);
+
+        if (data.isAdmin == 1){
+          setIsAdmin(true);
+        }
+        else{
+          setIsAuthenticated(true);
+
+        }
       } else {
         alert(data.message || "Login failed. Please try again.");
       }

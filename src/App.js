@@ -1,7 +1,8 @@
 import { useState } from "react";
 import LoginForm from "./components/LoginForm";
 import SignUpForm from "./components/SignUpForm";
-import { AuthContext } from "./context";
+import AdminViewPage from "./components/AdminViewPage";
+import { AdminContext, AuthContext } from "./context";
 import {SignUpContext } from "./context";
 
 // const AuthContext = React.createContext('false');
@@ -43,8 +44,10 @@ export default function App() {
   const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showSignUpPage, setShowSignUpPage] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showSignUpPage, setShowSignUpPage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(AdminContext);
+
 
   function handleShowAddFriend() {
     setShowAddFriend(!showAddFriend);
@@ -75,12 +78,13 @@ export default function App() {
   const handleShowSignUp = () => {
     setShowSignUpPage(true);
   };
-
+  console.log(isAdmin)
   return (
     <div className="app">
-      { showSignUpPage && <SignUpInComponent/> }
       { (!isAuthenticated && !showSignUpPage) && <LogInComponent/> }
-      { (isAuthenticated && !showSignUpPage) && <MainComponent/> }
+      { (!isAuthenticated && showSignUpPage) && <SignUpInComponent/> }
+      { isAuthenticated == true && <MainComponent/> }
+      { isAdmin === true && <AdminViewPage/>}
     </div>
   )
 
@@ -89,8 +93,10 @@ function LogInComponent () {
     <div>
       
       <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated}}>
-        <LoginForm />
-        <Button onClick={() => setShowSignUpPage(true)}> Sign Up </Button>
+        <AdminContext.Provider value={{ isAdmin, setIsAdmin }}>
+          <LoginForm />
+          <Button onClick={() => setShowSignUpPage(true)}> Sign Up </Button>
+        </AdminContext.Provider>
       </AuthContext.Provider>
 
     </div>   
@@ -102,7 +108,7 @@ function SignUpInComponent () {
       
       <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
         <SignUpContext.Provider value={{showSignUpPage, setShowSignUpPage}}>
-          <SignUpForm />
+            <SignUpForm />
         </SignUpContext.Provider>
       </AuthContext.Provider>
 
