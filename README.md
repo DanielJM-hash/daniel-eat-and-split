@@ -14,7 +14,9 @@ This project has the following functionalities:
 - The signUp page
 - The login Page
 - The Admin page
-- The user page 
+- The user page
+
+  
 The main security features implemented are as follows;
 - Input Validation
 - Data encryption via Hashed Passwords
