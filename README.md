@@ -196,4 +196,4 @@ I made significant changes to this link https://github.com/paulthadev/eat-n-spli
 External libraries:
 - [NPM](https://www.npmjs.com/)
 
-The Frameworks used for this Project are React js for the root page and Node js for the endpoint.
+The Frameworks used for this Project are React js for the root page, Node js for the endpoint and SQLite is used for the Database.
