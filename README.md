@@ -193,6 +193,7 @@ File: daniel-eat-and-split/helpers/apiDatabase.js:133
 ## Contributions and References 
 I made significant changes to this link https://github.com/paulthadev/eat-n-split/tree/main of an already exisiting Public GitHub Repository 
 
-External libraries and APIs:
-
+External libraries:
 - [NPM](https://www.npmjs.com/)
+
+The Frameworks used for this Project are React js for the root page and Node js for the endpoint.
