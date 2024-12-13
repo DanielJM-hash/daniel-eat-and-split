@@ -25,9 +25,9 @@ The main security features implemented are as follows;
 
 ## Project Structure 
 they are 3 main folders in this project that contain necessary codes for running the application:
-App.js: which is the root application where components are put together 
-apiDatabase.js: This is the endpoint of the application
-AdminViewPage.jsx: The details of the admin page 
+App.js:this is found under the folder "src" and under the file "components" on the code, which is the root application where components are put together 
+apiDatabase.js: this file is found under the folder "helpers" on the code This is the endpoint of the application
+AdminViewPage.jsx: this is found under the folder "src" and under the file "components" on the code, it shows details of the admin page 
 
 ## Setup and Installation instructions 
 
